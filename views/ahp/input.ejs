@@ -1,0 +1,174 @@
+<%- include('../layouts/header') %>
+<%- include('../layouts/sidebar') %>
+
+<div class="main-content">
+
+  <div class="d-flex justify-content-between align-items-center mb-4">
+
+    <h2>Input Perbandingan AHP</h2>
+
+    <a href="/ahp/hasil" class="btn btn-success">
+      Lihat Hasil Perhitungan
+    </a>
+
+  </div>
+
+  <div class="card shadow-sm rounded-4 p-4 mb-4">
+
+    <h5 class="mb-3">
+      Skala Saaty
+    </h5>
+
+    <ul>
+      <li>1 = Sama penting</li>
+      <li>3 = Sedikit lebih penting</li>
+      <li>5 = Lebih penting</li>
+      <li>7 = Sangat penting</li>
+      <li>9 = Mutlak lebih penting</li>
+    </ul>
+
+  </div>
+
+  <div class="card shadow-sm rounded-4 p-4 mb-4">
+
+    <form action="/ahp/store" method="POST">
+
+      <div class="row">
+
+        <div class="col-md-4">
+
+          <label>Kriteria Pertama</label>
+
+          <select
+            name="kriteria1"
+            class="form-control"
+            required
+          >
+
+            <% kriteria.forEach(item => { %>
+
+              <option value="<%= item.id %>">
+                <%= item.nama %>
+              </option>
+
+            <% }) %>
+
+          </select>
+
+        </div>
+
+        <div class="col-md-4">
+
+          <label>Kriteria Kedua</label>
+
+          <select
+            name="kriteria2"
+            class="form-control"
+            required
+          >
+
+            <% kriteria.forEach(item => { %>
+
+              <option value="<%= item.id %>">
+                <%= item.nama %>
+              </option>
+
+            <% }) %>
+
+          </select>
+
+        </div>
+
+        <div class="col-md-4">
+
+          <label>Nilai Saaty</label>
+
+          <input
+            type="number"
+            name="nilai"
+            min="1"
+            max="9"
+            class="form-control"
+            required
+          >
+
+        </div>
+
+      </div>
+
+      <button class="btn btn-success mt-4">
+        Simpan Perbandingan
+      </button>
+
+    </form>
+
+  </div>
+
+  <div class="card shadow-sm rounded-4 p-4">
+
+    <h5 class="mb-4">
+      Data Perbandingan
+    </h5>
+
+     
+
+    
+    <table class="table table-hover">
+
+      <thead>
+
+        <tr>
+          <th>No</th>
+          <th>Kriteria 1</th>
+          <th>Kriteria 2</th>
+          <th>Nilai</th>
+        </tr>
+
+      </thead>
+
+      <tbody>
+
+        <% perbandingan.forEach((item,index)=>{ %>
+
+          <tr>
+
+            <td><%= index + 1 %></td>
+
+            <td><%= item.kriteria1 %></td>
+
+            <td><%= item.kriteria2 %></td>
+
+            <td><%= item.nilai %></td>
+
+          </tr>
+
+        <% }) %>
+
+      </tbody>
+
+    </table>
+
+    <div class="d-flex justify-content-end mt-4">
+
+    <a
+      href="/ahp/reset"
+      class="btn btn-danger btn-sm"
+      onclick="return confirm('Yakin ingin menghapus semua data perbandingan?')"
+    >
+      Reset Semua
+    </a>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+ 
+
+  
+
+
+
+<%- include('../layouts/footer') %>

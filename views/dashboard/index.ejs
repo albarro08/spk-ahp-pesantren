@@ -1,0 +1,80 @@
+<%- include('../layouts/header') %>
+<%- include('../layouts/sidebar') %>
+
+<div class="main-content">
+
+  <h2 class="mb-4">Dashboard</h2>
+
+  <div class="row g-4">
+
+    <div class="col-md-3">
+      <div class="dashboard-card">
+        <h5>Total Kriteria</h5>
+        <h2><%= totalKriteria %></h2>
+      </div>
+    </div>
+
+
+    <div class="col-md-3">
+      <div class="dashboard-card">
+        <h5>Total Perbandingan</h5>
+        <h2><%= totalPerbandingan %></h2>
+      </div>
+    </div>
+
+    <div class="col-md-3">
+      <div class="dashboard-card">
+        <h5>Status CR</h5>
+        <h2><%= hasil.status %></h2>
+      </div>
+    </div>
+
+    <div class="col-md-3">
+      <div class="dashboard-card">
+        <h5>Prioritas Utama</h5>
+        <h2><%= hasil.ranking[0]?.nama || '-' %></h2>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="card mt-4 p-4 shadow-sm rounded-4">
+    <canvas id="chartBobot"></canvas>
+  </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+const labels = JSON.parse('<%- JSON.stringify(hasil.ranking.map(r => r.nama)) %>');
+const dataBobot = JSON.parse('<%- JSON.stringify(hasil.ranking.map(r => Number(r.bobot.toFixed(3)))) %>');
+
+  const ctx = document.getElementById('chartBobot');
+
+  new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: labels,
+      datasets: [{
+        label: 'Bobot Prioritas',
+        data: dataBobot,
+        borderWidth: 1,
+        borderRadius: 10
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: {
+          display: true
+        }
+      },
+      scales: {
+        y: {
+          beginAtZero: true
+        }
+      }
+    }
+  });
+</script>

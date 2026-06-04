@@ -1,0 +1,285 @@
+<%- include('../layouts/header') %>
+<%- include('../layouts/sidebar') %>
+
+<div class="main-content">
+
+  <div class="d-flex justify-content-between align-items-center mb-4">
+
+    <h2>Hasil Perhitungan AHP</h2>
+
+    <a href="/ahp" class="btn btn-secondary rounded-3">
+      Kembali
+    </a>
+
+  </div>
+<!-- CARD STATUS -->
+
+  <div class="row g-4 mb-4">
+
+    <div class="col-md-4">
+
+      <div class="dashboard-card">
+
+        <h5>Nilai CI</h5>
+
+        <h3>
+          <%= Number(hasil.ci).toFixed(4) %>
+        </h3>
+
+      </div>
+
+    </div>
+
+    <div class="col-md-4">
+
+      <div class="dashboard-card">
+
+        <h5>Nilai CR</h5>
+
+        <h3>
+          <%= Number(hasil.cr).toFixed(4) %>
+        </h3>
+
+      </div>
+
+    </div>
+
+     <div class="col-md-4">
+
+      <div class="dashboard-card">
+
+        <h5>Status Konsistensi</h5>
+
+        <h3 class="<%= hasil.status === 'Konsisten' ? 'text-success' : 'text-danger' %>">
+
+          <%= hasil.status %>
+
+        </h3>
+
+      </div>
+
+    </div>
+
+  </div>
+
+   <!-- RANKING PRIORITAS -->
+
+  <div class="card shadow-sm rounded-4 p-4 mb-4">
+
+    <h4 class="mb-4">
+      Ranking Prioritas
+    </h4>
+
+    <div class="table-responsive">
+
+         <table class="table table-hover align-middle">
+
+        <thead>
+
+          <tr>
+            <th>Ranking</th>
+            <th>Kriteria</th>
+            <th>Bobot</th>
+            <th>Persentase</th>
+          </tr>
+
+        </thead>
+
+
+        <tbody>
+
+          <% for(let i = 0; i < hasil.ranking.length; i++) { %>
+
+            <tr>
+
+              <td>
+
+                <strong>
+                  #<%= i + 1 %>
+                </strong>
+
+                </td>
+
+              <td>
+                <%= hasil.ranking[i].nama %>
+              </td>
+
+              <td>
+                <%= Number(hasil.ranking[i].bobot).toFixed(4) %>
+              </td>
+
+               <div class="progress" style="height:25px;">
+
+                  <div
+                    class="progress-bar bg-success"style="width: <%= (hasil.ranking[i].bobot * 100).toFixed(1) %>%">
+                  >
+
+                  <%= (hasil.ranking[i].bobot * 100).toFixed(1) %>%
+
+                  </div>
+
+                </div>
+
+              </td>
+
+            </tr>
+
+          <% } %>
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+  </div>
+
+  <!-- CHART -->
+
+  <div class="card shadow-sm rounded-4 p-4 mb-4">
+
+    <h4 class="mb-4">
+      Grafik Bobot Prioritas
+    </h4>
+
+    <canvas id="chartBobot"></canvas>
+
+  </div>
+
+  <!-- MATRIX -->
+
+  <div class="card shadow-sm rounded-4 p-4 mb-4">
+
+    <h4 class="mb-4">
+      Matriks Perbandingan
+    </h4>
+
+    <div class="table-responsive">
+
+      <table class="table table-bordered table-hover">
+
+        <tbody>
+
+          <% for(let i = 0; i < hasil.matrix.length; i++) { %>
+
+            <tr>
+
+              <% for(let j = 0; j < hasil.matrix[i].length; j++) { %>
+
+                <td>
+
+                  <%= Number(hasil.matrix[i][j]).toFixed(3) %>
+
+                </td>
+
+              <% } %>
+
+            </tr>
+
+          <% } %>
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+  </div>
+
+  <!-- NORMALISASI -->
+
+  <div class="card shadow-sm rounded-4 p-4 mb-4">
+
+    <h4 class="mb-4">
+      Matriks Normalisasi
+    </h4>
+
+    <div class="table-responsive">
+
+      <table class="table table-bordered table-hover">
+
+        <tbody>
+
+          <% for(let i = 0; i < hasil.normalisasi.length; i++) { %>
+
+            <tr>
+
+              <% for(let j = 0; j < hasil.normalisasi[i].length; j++) { %>
+
+                <td>
+
+                  <%= Number(hasil.normalisasi[i][j]).toFixed(3) %>
+
+                </td>
+
+              <% } %>
+
+            </tr>
+
+          <% } %>
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+  </div>
+
+</div>
+
+<script>
+
+const labels = JSON.parse(
+  '<%- JSON.stringify(hasil.ranking.map(r => r.nama)) %>'
+);
+
+const dataBobot = JSON.parse(
+  '<%- JSON.stringify(hasil.ranking.map(r => Number(r.bobot.toFixed(3)))) %>'
+);
+
+const ctx = document.getElementById('chartBobot');
+
+new Chart(ctx, {
+
+  type: 'bar',
+
+  data: {
+
+    labels: labels,
+
+    datasets: [{
+
+      label: 'Bobot Prioritas',
+
+      data: dataBobot,
+
+      borderWidth: 1,
+
+      borderRadius: 10
+
+    }]
+
+  },
+
+  options: {
+
+    responsive: true,
+
+    scales: {
+
+      y: {
+
+        beginAtZero: true
+
+      }
+
+    }
+
+  }
+
+});
+
+</script>
+
+<%- include('../layouts/footer') %>

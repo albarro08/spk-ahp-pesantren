@@ -1,0 +1,53 @@
+body {
+  font-family: 'Poppins', sans-serif;
+  background: #f3f4f6;
+}
+
+.login-body {
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg,#059669,#10b981);
+}
+
+.login-card {
+  width: 400px;
+  background: white;
+  padding: 40px;
+  border-radius: 24px;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+}
+
+.btn-emerald {
+  background: #059669;
+  color: white;
+  border-radius: 12px;
+  padding: 12px;
+}
+
+.dashboard-card {
+  background: white;
+  padding: 25px;
+  border-radius: 20px;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+  transition: 0.3s;
+}
+
+.dashboard-card:hover {
+  transform: translateY(-5px);
+}
+
+.sidebar {
+  width: 260px;
+  height: 100vh;
+  position: fixed;
+  background: #065f46;
+  color: white;
+  padding: 20px;
+}
+
+.main-content {
+  margin-left: 280px;
+  padding: 30px;
+}

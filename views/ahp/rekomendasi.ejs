@@ -1,0 +1,226 @@
+<%- include('../layouts/header') %>
+<%- include('../layouts/sidebar') %>
+
+<div class="main-content">
+
+  <div class="d-flex justify-content-between align-items-center mb-4">
+
+    <h2>Rekomendasi Nominal Biaya</h2>
+
+    <a href="/ahp/hasil" class="btn btn-secondary rounded-3">
+      Kembali
+    </a>
+
+  </div>
+
+  <!-- FORM INPUT -->
+
+  <div class="card shadow-sm rounded-4 p-4 mb-4">
+
+    <h4 class="mb-4">
+      Input Total Biaya Awal Masuk
+    </h4>
+
+    <form method="GET" action="/ahp/rekomendasi">
+
+      <div class="row align-items-end">
+
+        <div class="col-md-8">
+
+          <label class="form-label">
+            Total Biaya
+          </label>
+
+          <input
+            type="number"
+            name="total"
+            class="form-control"
+            placeholder="Contoh: 5000000"
+            required
+            value="<%= total || '' %>"
+          >
+
+        </div>
+
+        <div class="col-md-4">
+
+          <button class="btn btn-success w-100">
+
+            Hitung Rekomendasi
+
+          </button>
+
+        </div>
+
+      </div>
+
+    </form>
+
+  </div>
+
+  <% if(!hasil || hasil.ranking.length === 0) { %>
+
+  <div class="alert alert-warning rounded-4">
+
+    Perhitungan AHP belum tersedia.
+    Silakan input perbandingan terlebih dahulu.
+
+  </div>
+
+<% } %>
+
+<% if(total) { %>
+  <!-- TOTAL -->
+
+  <div class="dashboard-card mb-4">
+
+    <h5>Total Biaya Awal Masuk</h5>
+
+    <h2 class="text-success">
+
+      Rp <%= Number(total).toLocaleString('id-ID') %>
+
+    </h2>
+
+  </div>
+
+  <!-- TABEL -->
+
+  <div class="card shadow-sm rounded-4 p-4 mb-4">
+
+    <h4 class="mb-4">
+      Hasil Distribusi Biaya
+    </h4>
+
+    <div class="table-responsive">
+
+      <table class="table table-hover align-middle">
+
+        <thead>
+
+          <tr>
+
+            <th>No</th>
+            <th>Kriteria</th>
+            <th>Bobot</th>
+            <th>Persentase</th>
+            <th>Nominal</th>
+
+          </tr>
+
+        </thead>
+
+        <tbody>
+
+          <% for(let i = 0; i < hasil.ranking.length; i++) { %>
+
+            <tr>
+
+              <td>
+                <%= i + 1 %>
+              </td>
+
+              <td>
+                <%= hasil.ranking[i].nama %>
+              </td>
+
+              <td>
+                <%= Number(hasil.ranking[i].bobot).toFixed(4) %>
+              </td>
+
+              <td>
+
+                <span class="badge bg-success">
+
+                  <%= (hasil.ranking[i].bobot * 100).toFixed(1) %>%
+
+                </span>
+
+              </td>
+
+              <td class="fw-bold text-success">
+
+                Rp <%= Number(
+                  hasil.ranking[i].bobot * total
+                ).toLocaleString('id-ID') %>
+
+              </td>
+
+            </tr>
+
+          <% } %>
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+  </div>
+
+  <!-- CHART -->
+
+  <div class="card shadow-sm rounded-4 p-4">
+
+    <h4 class="mb-4">
+      Grafik Distribusi Biaya
+    </h4>
+
+    <canvas id="chartRekomendasi"></canvas>
+
+  </div>
+
+  <% } %>
+
+</div>
+
+<div id="chart-data"
+     data-labels='<%- JSON.stringify(hasil.ranking.map(r => r.nama)) %>'
+     data-nominal='<%- JSON.stringify(
+       hasil.ranking.map(r =>
+         Number((r.bobot * total).toFixed(0))
+       )
+     ) %>'>
+</div>
+
+<script>
+
+const chartData = document.getElementById('chart-data');
+
+const labels = JSON.parse(
+  chartData.dataset.labels
+);
+
+const nominal = JSON.parse(
+  chartData.dataset.nominal
+);
+
+const ctx = document.getElementById('chartRekomendasi');
+
+if(ctx){
+
+  new Chart(ctx, {
+
+    type: 'doughnut',
+
+    data: {
+
+      labels: labels,
+
+      datasets: [{
+
+        data: nominal,
+
+        borderWidth: 1
+
+      }]
+
+    }
+
+  });
+
+}
+
+</script>
+
+<%- include('../layouts/footer') %>
